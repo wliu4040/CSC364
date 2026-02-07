@@ -7,12 +7,11 @@ import javax.swing.*;
 
 public class Main extends JFrame {
     public Main() {
-        add(new org.example.View());
+        add(View.getInstance());
         setSize(800,600);
         setVisible(true);
     }
     static void main() {
         Main frame = new Main();
-
     }
 }
