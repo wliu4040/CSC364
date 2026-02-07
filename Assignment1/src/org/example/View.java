@@ -17,7 +17,7 @@ public class View extends JPanel {
         buttonHolder.add(new JButton("Start"));
         buttonHolder.add(new JButton("Reset"));
 
-        add(new JLabel("(Click 1 = START, Click 2 = END, Click = toggle OBSTA)"));
+        add(new JLabel("(Click 1 = START, Click 2 = END, Click = toggle OBSTACLE)"));
 
         add(new GridPanel(10,10));
 
