@@ -8,29 +8,51 @@ import java.beans.PropertyChangeListener;
 public class View extends JPanel implements PropertyChangeListener {
     private static JComboBox<String> userClickType;
     private static View view;
+    private static GridPanel gridPanel;
+    private static JComboBox<Integer> gridSizesBox;
     private View() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(new JLabel("Concurrent Grid Pathfinder"));
+
+        JComboBox<Integer> gridSizes = new JComboBox<>();
+        gridSizesBox = gridSizes;
+
+        gridSizes.setMaximumSize(new Dimension(100,30));
+        gridSizes.setMinimumSize(new Dimension(100,30));
+
+        for(int i = 10; i <= 100; i++) {
+            gridSizes.addItem(i);
+        }
+
+        gridSizes.addActionListener(e -> resetGrid());
+
+
         JPanel buttonHolder = new JPanel();
+        add(buttonHolder);
         buttonHolder.setLayout(new BoxLayout(buttonHolder,BoxLayout.X_AXIS));
         buttonHolder.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(buttonHolder);
-        buttonHolder.add(new JLabel("Grid Size:"));
-        JTextField field = new JTextField();
-        field.setMaximumSize(new Dimension(60,30));
-        field.setMinimumSize(new Dimension(60,30));
-        buttonHolder.add(field);
-        buttonHolder.add(new JButton("Start"));
-        buttonHolder.add(new JButton("Reset"));
+        buttonHolder.add(gridSizes);
+
+        JButton startButton = new JButton("Start");
+        startButton.addActionListener(e -> {new BFS().start();});
+
+        buttonHolder.add(startButton);
+
+        JButton resetButton = new JButton("Reset");
+        resetButton.addActionListener(e -> resetGrid());
+
+        buttonHolder.add(resetButton);
+        resetButton.addActionListener(e -> {new BFS().start();});
+
         JComboBox<String> combo = new JComboBox<>(new String[]{"START", "END", "OBSTACLE"});
         combo.setMaximumSize(new Dimension(120,30));
         combo.setMinimumSize(new Dimension(120,30));
-        buttonHolder.add(combo);
 
-        GridPanel gPanel = new GridPanel(10,10);
-        gPanel.addPropertyChangeListener(this);
-        add(gPanel);
-        this.userClickType = combo;
+        buttonHolder.add(combo);
+        userClickType = combo;
+        gridPanel = new GridPanel(10, 10);
+        gridPanel.addPropertyChangeListener(this);
+        add(gridPanel);
         setVisible(true);
     }
 
@@ -47,5 +69,22 @@ public class View extends JPanel implements PropertyChangeListener {
     }
     public String getUserClickType() {
         return userClickType.getSelectedItem().toString();
+    }
+
+    private void resetGrid() {
+        int selected = Integer.valueOf(gridSizesBox.getSelectedItem().toString());
+        if (gridPanel != null) {
+            view.remove(gridPanel);
+        }
+        gridPanel = new GridPanel(selected, selected);
+        gridPanel.addPropertyChangeListener(this);
+        view.add(gridPanel);
+
+        view.repaint();
+        view.revalidate();
+    }
+
+    public GridPanel getGridPanel() {
+        return gridPanel;
     }
 }

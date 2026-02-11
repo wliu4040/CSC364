@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.beans.PropertyChangeSupport;
 
 class GridPanel extends JPanel {
@@ -19,51 +18,66 @@ class GridPanel extends JPanel {
 
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
-                add(new Cell(r, c, Cell.CellType.EMPTY));
-                cells[r][c] = new Cell(r, c, Cell.CellType.EMPTY);
+                Cell cell = new Cell(r, c, Cell.CellType.EMPTY);
+                add(cell);
+                cells[r][c] = cell;
             }
         }
-        addMouseListener(new MouseNanny() {});
+        addMouseListener(new MouseNanny());
+        addMouseMotionListener(new MouseNanny());
     }
 
     public void setCell(Cell cell, Cell.CellType type) {
-        if (type == Cell.CellType.START) {
-            if (start != null) {
-                start.setBackground(Color.WHITE);
-                start.setCellType(Cell.CellType.EMPTY);
-            }
-            cell.setBackground(Color.RED);
-            start = cell;
-        }
-        if (type == Cell.CellType.END) {
-            if (end != null) {
-                end.setBackground(Color.WHITE);
-                end.setCellType(Cell.CellType.EMPTY);
-            }
-            cell.setBackground(Color.BLUE);
-            end = cell;
+
+        switch(type) {
+            case START:
+                if (start != null) {
+                    start.setBackground(Color.WHITE);
+                    start.setCellType(Cell.CellType.EMPTY);
+                }
+                start = cell;
+                break;
+            case END:
+                if (end != null) {
+                    end.setBackground(Color.WHITE);
+                    end.setCellType(Cell.CellType.EMPTY);
+                }
+                end = cell;
+                break;
         }
         if(type != cell.getCellType()) {
-            pcs.firePropertyChange("cell",null, new CellChange(cell, type));
             cells[cell.getRow()][cell.getCol()].setCellType(type);
+            cell.updateColor();
+            pcs.firePropertyChange("cell",null, null);
         }
     }
 
     class MouseNanny extends MouseAdapter {
+
         @Override
         public void mousePressed(MouseEvent e) {
-            Component clicked =
-                    getComponentAt(e.getPoint());
+            changeCell(getComponentAt(e.getPoint()));
+        }
 
-            if (clicked instanceof Cell cell) {
-                int cols = cells[0].length;
-                int index = getComponentZOrder(cell);
-                int row = index / cols;
-                int col = index % cols;
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            if (View.getInstance().getUserClickType().equals("OBSTACLE")) {
+                Component component = getComponentAt(e.getPoint());
+                if(component instanceof Cell) {
+                    changeCell(component);
+                }
+            }
+        }
+
+        public void changeCell(Component comp) {
+            if(comp instanceof Cell cell) {
                 Cell.CellType cellTypeEnum = Cell.CellType.valueOf(View.getInstance().getUserClickType());
                 setCell(cell, cellTypeEnum);
             }
         }
+
+
+
 
     }
 }
