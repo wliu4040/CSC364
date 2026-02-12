@@ -34,7 +34,7 @@ public class View extends JPanel{
         buttonHolder.add(gridSizes);
 
         JButton startButton = new JButton("Start");
-        startButton.addActionListener(e -> {new BFS().start();});
+        startButton.addActionListener(e -> {new BFS(2).start();});
 
         buttonHolder.add(startButton);
 
@@ -42,8 +42,6 @@ public class View extends JPanel{
         resetButton.addActionListener(e -> resetGrid());
 
         buttonHolder.add(resetButton);
-        resetButton.addActionListener(e -> {new BFS().start();});
-        resetButton.addActionListener(e -> {new BFS().start();});
 
         JComboBox<String> combo = new JComboBox<>(new String[]{"START", "END", "OBSTACLE"});
         combo.setMaximumSize(new Dimension(120,30));

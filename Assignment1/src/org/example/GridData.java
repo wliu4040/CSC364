@@ -3,36 +3,28 @@ package org.example;
 import java.awt.*;
 
 public class GridData{
-    private static GridData gridData;
     private static CellData[][] grid;
     private static CellData start;
     private static CellData end;
 
-    private GridData(int size) {
+    public static void refreshBlackboard(int size) {
         grid = new CellData[size][size];
-    }
-
-    public static GridData getBlackboard() {
-        if(gridData == null) {
-            gridData = new GridData(10);
-        }
-        return gridData;
-    }
-
-    public static GridData refreshBlackboard(int size) {
-        gridData = new GridData(size);
-        grid = new CellData[size][size];
+        start = null;
+        end = null;
         for(int row=0;row<size;row++) {
             for(int col=0;col<size;col++) {
                 grid[row][col] = new CellData(row,col,CellType.EMPTY);
             }
         }
-        return gridData;
     }
-    public CellData getCell(int row, int col) {
-        return grid[row][col];
+    public static CellData getCell(int row, int col) {
+        if(row >= 0 && col >= 0 && row < grid.length && col < grid[0].length) {
+            return grid[row][col];
+        }
+        else return null;
+
     }
-    public void setCell(int row, int col, CellType type) {
+    public static void setCell(int row, int col, CellType type) {
         CellData cell = grid[row][col];
         switch(type) {
             case START:
@@ -52,5 +44,10 @@ public class GridData{
             grid[row][col].setCellType(type);
         }
     }
-
+    public static CellData getEnd() {
+        return end;
+    }
+    public static CellData getStart() {
+        return start;
+    }
 }

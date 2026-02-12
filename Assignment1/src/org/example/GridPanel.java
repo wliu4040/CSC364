@@ -8,7 +8,7 @@ import java.awt.event.MouseEvent;
 class GridPanel extends JPanel{
     public Cell[][] cells;
     public GridPanel(int size) {
-        GridData gridData = GridData.refreshBlackboard(size);
+        GridData.refreshBlackboard(size);
         setLayout(new GridLayout(size, size));
         this.cells = new Cell[size][size];
 
@@ -17,14 +17,13 @@ class GridPanel extends JPanel{
                 Cell cell = new Cell(r, c);
                 add(cell);
                 cells[r][c] = cell;
-                CellData cellData = gridData.getCell(r,c);
+                CellData cellData = GridData.getCell(r,c);
                 cellData.addPropertyChangeListener(cell);
             }
         }
         addMouseListener(new MouseNanny());
         addMouseMotionListener(new MouseNanny());
     }
-
 
     class MouseNanny extends MouseAdapter {
 
@@ -48,13 +47,9 @@ class GridPanel extends JPanel{
                 CellType cellTypeEnum = CellType.valueOf(View.getInstance().getUserClickType());
                 int row = cell.getRow();
                 int col = cell.getCol();
-                GridData.getBlackboard().setCell(row,col, cellTypeEnum);
+                GridData.setCell(row,col, cellTypeEnum);
             }
         }
-
-
-
-
     }
 }
 

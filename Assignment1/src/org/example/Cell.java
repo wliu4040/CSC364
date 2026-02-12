@@ -12,7 +12,7 @@ public class Cell extends JPanel implements PropertyChangeListener {
     private final int row;
     private final int col;
 
-    private final Map<CellType, Color> colorMap =
+    private static final Map<CellType, Color> colorMap =
             Map.ofEntries(
                     entry(CellType.EMPTY,new Color(255,255,255)),
                     entry(CellType.START, new Color(255,0,0)),
@@ -48,7 +48,6 @@ public class Cell extends JPanel implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        System.out.println("paint");
         if(evt.getNewValue() instanceof CellType cellType) {
             updateColor(cellType);
             repaint();

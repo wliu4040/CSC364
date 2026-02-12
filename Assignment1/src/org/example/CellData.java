@@ -9,7 +9,7 @@ public class CellData{
     private final int row;
     private final int col;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-
+    private CellData prev;
 
     public CellData(int row, int col,CellType cellType) {
         this.cellType = cellType;
@@ -29,6 +29,15 @@ public class CellData{
     public int getCol() {
         return col;
     }
+
+    public CellData getPrev() {
+        return prev;
+    }
+
+    public void setPrev(CellData prev) {
+        this.prev = prev;
+    }
+
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(listener);
     }

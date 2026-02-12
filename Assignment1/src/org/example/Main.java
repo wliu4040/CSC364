@@ -11,7 +11,7 @@ public class Main extends JFrame {
         setSize(800,600);
         setVisible(true);
     }
-    static void main() {
-        Main frame = new Main();
+    public static void main(String[] args) {
+        new Main();
     }
 }
