@@ -5,7 +5,7 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-public class View extends JPanel implements PropertyChangeListener {
+public class View extends JPanel{
     private static JComboBox<String> userClickType;
     private static View view;
     private static GridPanel gridPanel;
@@ -43,6 +43,7 @@ public class View extends JPanel implements PropertyChangeListener {
 
         buttonHolder.add(resetButton);
         resetButton.addActionListener(e -> {new BFS().start();});
+        resetButton.addActionListener(e -> {new BFS().start();});
 
         JComboBox<String> combo = new JComboBox<>(new String[]{"START", "END", "OBSTACLE"});
         combo.setMaximumSize(new Dimension(120,30));
@@ -50,8 +51,7 @@ public class View extends JPanel implements PropertyChangeListener {
 
         buttonHolder.add(combo);
         userClickType = combo;
-        gridPanel = new GridPanel(10, 10);
-        gridPanel.addPropertyChangeListener(this);
+        gridPanel = new GridPanel(10);
         add(gridPanel);
         setVisible(true);
     }
@@ -63,10 +63,6 @@ public class View extends JPanel implements PropertyChangeListener {
         return view;
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        repaint();
-    }
     public String getUserClickType() {
         return userClickType.getSelectedItem().toString();
     }
@@ -76,8 +72,7 @@ public class View extends JPanel implements PropertyChangeListener {
         if (gridPanel != null) {
             view.remove(gridPanel);
         }
-        gridPanel = new GridPanel(selected, selected);
-        gridPanel.addPropertyChangeListener(this);
+        gridPanel = new GridPanel(selected);
         view.add(gridPanel);
 
         view.repaint();

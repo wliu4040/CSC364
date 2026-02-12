@@ -4,53 +4,27 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeSupport;
 
-class GridPanel extends JPanel {
-    Cell[][] cells;
-    Cell start;
-    Cell end;
-    private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+class GridPanel extends JPanel{
+    public Cell[][] cells;
+    public GridPanel(int size) {
+        GridData gridData = GridData.refreshBlackboard(size);
+        setLayout(new GridLayout(size, size));
+        this.cells = new Cell[size][size];
 
-    public GridPanel(int rows, int cols) {
-        setLayout(new GridLayout(rows, cols));
-        this.cells = new Cell[rows][cols];
-
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                Cell cell = new Cell(r, c, Cell.CellType.EMPTY);
+        for (int r = 0; r < size; r++) {
+            for (int c = 0; c < size; c++) {
+                Cell cell = new Cell(r, c);
                 add(cell);
                 cells[r][c] = cell;
+                CellData cellData = gridData.getCell(r,c);
+                cellData.addPropertyChangeListener(cell);
             }
         }
         addMouseListener(new MouseNanny());
         addMouseMotionListener(new MouseNanny());
     }
 
-    public void setCell(Cell cell, Cell.CellType type) {
-
-        switch(type) {
-            case START:
-                if (start != null) {
-                    start.setBackground(Color.WHITE);
-                    start.setCellType(Cell.CellType.EMPTY);
-                }
-                start = cell;
-                break;
-            case END:
-                if (end != null) {
-                    end.setBackground(Color.WHITE);
-                    end.setCellType(Cell.CellType.EMPTY);
-                }
-                end = cell;
-                break;
-        }
-        if(type != cell.getCellType()) {
-            cells[cell.getRow()][cell.getCol()].setCellType(type);
-            cell.updateColor();
-            pcs.firePropertyChange("cell",null, null);
-        }
-    }
 
     class MouseNanny extends MouseAdapter {
 
@@ -71,8 +45,10 @@ class GridPanel extends JPanel {
 
         public void changeCell(Component comp) {
             if(comp instanceof Cell cell) {
-                Cell.CellType cellTypeEnum = Cell.CellType.valueOf(View.getInstance().getUserClickType());
-                setCell(cell, cellTypeEnum);
+                CellType cellTypeEnum = CellType.valueOf(View.getInstance().getUserClickType());
+                int row = cell.getRow();
+                int col = cell.getCol();
+                GridData.getBlackboard().setCell(row,col, cellTypeEnum);
             }
         }
 

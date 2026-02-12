@@ -2,14 +2,16 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Map;
 
 import static java.util.Map.entry;
 
-public class Cell extends JPanel {
+public class Cell extends JPanel implements PropertyChangeListener {
     private final int row;
     private final int col;
-    private CellType cellType;
+
     private final Map<CellType, Color> colorMap =
             Map.ofEntries(
                     entry(CellType.EMPTY,new Color(255,255,255)),
@@ -20,31 +22,15 @@ public class Cell extends JPanel {
                     entry(CellType.VISITED,new Color(192,192,192)),
                     entry(CellType.PATH, new Color(64,224,208)));
 
-
-    public enum CellType {
-        EMPTY,
-        START,
-        END,
-        FRONTIER,
-        OBSTACLE,
-        VISITED,
-        PATH
-    }
-
-
-    public Cell(int row, int col, CellType type) {
+    public Cell(int row, int col) {
         this.row = row;
         this.col = col;
-        this.cellType = type;
 
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
         setBackground(Color.WHITE);
         setOpaque(true);
     }
 
-    public CellType getCellType() {
-        return cellType;
-    }
     public int getRow() {
         return row;
     }
@@ -52,16 +38,20 @@ public class Cell extends JPanel {
         return col;
     }
 
-    public void updateColor() {
+    public void updateColor(CellType cellType) {
         setBackground(colorMap.get(cellType));
     }
 
-    public void setCellType(CellType cellType) {
-        this.cellType = cellType;
-    }
     public CellType getCellType(CellType cellType) {
         return cellType;
     }
 
-
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        System.out.println("paint");
+        if(evt.getNewValue() instanceof CellType cellType) {
+            updateColor(cellType);
+            repaint();
+        }
+    }
 }
